@@ -4,6 +4,7 @@ import com.ecc.ewhascholarship.domain.enums.ScholarshipType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -40,5 +41,8 @@ public class Scholarship {
 
     @Column
     private String field;
+
+    @OneToMany(mappedBy = "scholarship", fetch = FetchType.LAZY)
+    private List<Criteria> criteriaList;
 
 }
