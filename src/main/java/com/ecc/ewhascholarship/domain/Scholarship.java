@@ -16,7 +16,7 @@ import java.util.UUID;
 public class Scholarship {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false)
@@ -40,7 +40,7 @@ public class Scholarship {
     private ScholarshipType type;
 
     @Column
-    private String field;
+    private String note;
 
     @OneToMany(mappedBy = "scholarship", fetch = FetchType.LAZY)
     private List<Criteria> criteriaList;
