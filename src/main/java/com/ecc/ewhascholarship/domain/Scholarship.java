@@ -45,4 +45,7 @@ public class Scholarship {
     @OneToMany(mappedBy = "scholarship", fetch = FetchType.LAZY)
     private List<Criteria> criteriaList;
 
+    @OneToMany(mappedBy = "scholarship", fetch = FetchType.LAZY)
+    private List<Bookmark> bookmarkList;
+
 }

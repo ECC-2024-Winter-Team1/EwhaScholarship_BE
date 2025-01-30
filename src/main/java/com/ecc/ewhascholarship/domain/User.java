@@ -3,6 +3,7 @@ package com.ecc.ewhascholarship.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -31,4 +32,8 @@ public class User {
 
     @Column
     private int incomeLevel;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Bookmark> bookmarkList;
+
 }
