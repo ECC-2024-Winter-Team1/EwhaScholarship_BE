@@ -12,13 +12,14 @@ import java.util.UUID;
 @AllArgsConstructor
 @ToString
 @Entity
+@Builder
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column
