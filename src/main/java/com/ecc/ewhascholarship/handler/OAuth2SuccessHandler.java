@@ -1,6 +1,7 @@
 package com.ecc.ewhascholarship.handler;
 
 import com.ecc.ewhascholarship.common.ApiResponse;
+import com.ecc.ewhascholarship.config.JwtTokenProvider;
 import com.ecc.ewhascholarship.dto.LoginResponseDto;
 import com.ecc.ewhascholarship.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,12 +14,16 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
@@ -33,7 +38,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = null;
         if (isRegistered) {
             // 회원인 경우 JWT 생성
-            accessToken = "token";
+            UUID userId = userService.findByEmail(email).getId();
+            accessToken = jwtTokenProvider.createToken(userId);
         }
 
         LoginResponseDto responseDto = new LoginResponseDto(isRegistered, email, accessToken);
