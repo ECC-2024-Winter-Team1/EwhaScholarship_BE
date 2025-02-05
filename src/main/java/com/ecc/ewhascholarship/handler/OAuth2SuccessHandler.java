@@ -1,7 +1,7 @@
 package com.ecc.ewhascholarship.handler;
 
 import com.ecc.ewhascholarship.common.ApiResponse;
-import com.ecc.ewhascholarship.config.JwtTokenProvider;
+import com.ecc.ewhascholarship.security.JwtTokenProvider;
 import com.ecc.ewhascholarship.dto.LoginResponseDto;
 import com.ecc.ewhascholarship.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;

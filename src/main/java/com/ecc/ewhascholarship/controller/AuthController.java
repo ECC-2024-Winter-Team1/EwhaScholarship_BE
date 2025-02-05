@@ -1,7 +1,7 @@
 package com.ecc.ewhascholarship.controller;
 
 import com.ecc.ewhascholarship.common.ApiResponse;
-import com.ecc.ewhascholarship.config.JwtTokenProvider;
+import com.ecc.ewhascholarship.security.JwtTokenProvider;
 import com.ecc.ewhascholarship.dto.RegisterResponseDto;
 import com.ecc.ewhascholarship.dto.UserDto;
 import com.ecc.ewhascholarship.service.UserService;

@@ -1,4 +1,4 @@
-package com.ecc.ewhascholarship.config;
+package com.ecc.ewhascholarship.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

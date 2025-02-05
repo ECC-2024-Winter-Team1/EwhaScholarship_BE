@@ -1,5 +1,6 @@
 package com.ecc.ewhascholarship.config;
 
+import com.ecc.ewhascholarship.security.JwtTokenProvider;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
