@@ -18,10 +18,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final List<String> EXCLUDED_PATHS = List.of(
+            "/api/auth/register"
+    );
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -30,6 +35,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         ObjectMapper objectMapper = new ObjectMapper();
+
+        String path = request.getRequestURI();
+
+        // 특정 경로는 필터 적용 안 함
+        if (EXCLUDED_PATHS.stream().anyMatch(path::startsWith)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         try {
             log.info("JWT 인증 필터가 요청을 처리합니다.");
