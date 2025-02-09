@@ -30,4 +30,11 @@ public class Bookmark {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    public static Bookmark createBookmark(User user, Scholarship scholarship) {
+
+        Bookmark bookmark = new Bookmark();
+        bookmark.user = user;
+        bookmark.scholarship = scholarship;
+        return bookmark;
+    }
 }
