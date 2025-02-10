@@ -27,4 +27,12 @@ public class UserController {
                 .body(ApiResponse.success("사용자 정보 조회 성공!",response));
     }
 
+    @PatchMapping
+    public ResponseEntity<ApiResponse<UserDto>> updateUser(Principal principal, @RequestBody UserDto userDto) {
+        UUID userId = UUID.fromString(principal.getName());
+        UserDto response = userService.updateUser(userId, userDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success("사용자 정보 수정 성공!",response));
+    }
 }
