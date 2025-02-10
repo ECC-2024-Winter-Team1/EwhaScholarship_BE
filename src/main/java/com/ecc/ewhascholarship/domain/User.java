@@ -40,4 +40,21 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Review> reviewList;
 
+    public void patch(User dto) {
+        if (dto.getEmail() != null && !dto.getEmail().equals(this.email)) {
+            throw new IllegalArgumentException("이메일은 수정할 수 없습니다.");
+        }
+        if (dto.getDepartment() != null) {
+            this.department = dto.getDepartment();
+        }
+        if (dto.getGpa() >= 0) {
+            this.gpa = dto.getGpa();
+        }
+        if (dto.getYear() > 0) {
+            this.year = dto.getYear();
+        }
+        if (dto.getIncomeLevel() >= 0) {
+            this.incomeLevel = dto.getIncomeLevel();
+        }
+    }
 }
