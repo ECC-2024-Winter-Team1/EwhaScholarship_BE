@@ -58,12 +58,12 @@ public class UserService {
         User user = dto.toEntity();
         User target = userRepository.findById(id).orElse(null);
 
-        if (target == null || id != user.getId()) {
+        if (target == null || id != target.getId()) {
             throw new UserNotFoundException();
         }
 
         target.patch(user);
-        User updated = userRepository.save(user);
+        User updated = userRepository.save(target);
         return UserDto.fromEntity(updated);
     }
 
