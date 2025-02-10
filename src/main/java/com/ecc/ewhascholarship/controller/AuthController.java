@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -29,6 +32,18 @@ public class AuthController {
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.success("사용자 등록 성공!", responseDto)
                 );
+    }
+
+    @DeleteMapping("/delete-account")
+    public ResponseEntity<ApiResponse> deleteUser(Principal principal) {
+        UUID userId = UUID.fromString(principal.getName());
+        userService.deleteUser(userId);
+
+        // 토큰 무효화 관련 로직 구현 필요
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success("사용자 탈퇴 성공!", null));
     }
 
 }
