@@ -20,7 +20,10 @@ public class User {
     private UUID id;
 
     @Column(nullable = false, unique = true)
-    private String email;
+    private String username;
+
+    @Column(nullable = false)
+    private String password;
 
     @Column
     private String department;
@@ -41,8 +44,11 @@ public class User {
     private List<Review> reviewList;
 
     public void patch(User dto) {
-        if (dto.getEmail() != null && !dto.getEmail().equals(this.email)) {
-            throw new IllegalArgumentException("이메일은 수정할 수 없습니다.");
+        if (dto.getUsername() != null && !dto.getUsername().equals(this.username)) {
+            throw new IllegalArgumentException("아이디는 수정할 수 없습니다.");
+        }
+        if (dto.getPassword() != null) {
+            throw new IllegalArgumentException("비밀번호는 수정할 수 없습니다.");
         }
         if (dto.getDepartment() != null) {
             this.department = dto.getDepartment();
