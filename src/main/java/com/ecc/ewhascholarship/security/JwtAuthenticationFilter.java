@@ -25,7 +25,8 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final List<String> EXCLUDED_PATHS = List.of(
-            "/api/auth/register"
+            "/api/auth/register",
+            "/api/auth/login"
     );
 
     @Autowired
