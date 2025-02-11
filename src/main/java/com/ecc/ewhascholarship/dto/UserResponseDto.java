@@ -12,34 +12,28 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto {
+public class UserResponseDto {
 
     private UUID id;
-    private String email;
+
+    private String username;
+
     private String department;
+
     private float gpa;
+
     private int year;
+
     private int incomeLevel;
 
-    public static UserDto fromEntity(User user) {
-        return UserDto.builder()
+    public static UserResponseDto fromEntity(User user) {
+        return UserResponseDto.builder()
                 .id(user.getId())
-                .email(user.getEmail())
+                .username(user.getUsername())
                 .department(user.getDepartment())
                 .gpa(user.getGpa())
                 .year(user.getYear())
                 .incomeLevel(user.getIncomeLevel())
-                .build();
-    }
-
-    public User toEntity() {
-        return User.builder()
-                .id(id)
-                .email(email)
-                .department(department)
-                .gpa(gpa)
-                .year(year)
-                .incomeLevel(incomeLevel)
                 .build();
     }
 
