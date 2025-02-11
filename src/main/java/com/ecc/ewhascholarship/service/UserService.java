@@ -1,11 +1,13 @@
 package com.ecc.ewhascholarship.service;
 
 import com.ecc.ewhascholarship.domain.User;
-import com.ecc.ewhascholarship.dto.UserDto;
+import com.ecc.ewhascholarship.dto.*;
 import com.ecc.ewhascholarship.exception.UserNotFoundException;
 import com.ecc.ewhascholarship.repository.UserRepository;
+import com.ecc.ewhascholarship.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.UUID;
 
@@ -15,47 +17,40 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElse(null);
-    }
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     // 사용자 조회
-    public UserDto getUserById(UUID id) {
+    public UserResponseDto getUserById(UUID id) {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
             throw new UserNotFoundException();
         }
 
-        return UserDto.fromEntity(user);
+        return UserResponseDto.fromEntity(user);
     }
 
     // 사용자 등록
-    public UserDto registerUser(UserDto dto) {
-        User user = dto.toEntity();
+    public UserResponseDto registerUser(UserRegisterDto dto) {
+        String encodedPassword = passwordEncoder.encode(dto.getPassword());
+
+        User user = dto.toEntity(encodedPassword);
 
         if (user.getId() != null) {
             throw new IllegalArgumentException("잘못된 요청입니다.");
         }
 
-        if (!isValidEmailDomain(user.getEmail())) {
-            throw new IllegalArgumentException("허용된 이메일 도메인이 아닙니다.");
-        }
-
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("이미 가입된 이메일입니다.");
-        }
-
         User registered = userRepository.save(user);
-        return UserDto.fromEntity(registered);
+        return UserResponseDto.fromEntity(registered);
     }
 
     // 사용자 수정
-    public UserDto updateUser(UUID id, UserDto dto) {
+    public UserResponseDto updateUser(UUID id, UserUpdateDto dto) {
         User user = dto.toEntity();
+        System.out.println(user.toString());
         User target = userRepository.findById(id).orElse(null);
 
         if (target == null || id != target.getId()) {
@@ -64,7 +59,7 @@ public class UserService {
 
         target.patch(user);
         User updated = userRepository.save(target);
-        return UserDto.fromEntity(updated);
+        return UserResponseDto.fromEntity(updated);
     }
 
     // 사용자 삭제
@@ -76,10 +71,16 @@ public class UserService {
         userRepository.delete(target);
     }
 
-    // 이메일 도메인 체크
-    private boolean isValidEmailDomain(String email) {
-        String emailDomain = email.substring(email.indexOf('@') + 1);
-        return "ewha.ac.kr".equals(emailDomain) || "ewhain.net".equals(emailDomain);
-    }
+    public LoginResponseDto login(LoginRequestDto dto) {
+        User user = userRepository.findByUsername(dto.getUsername()).orElse(null);
 
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new RuntimeException("잘못된 비밀번호 입니다.");
+        }
+
+        return new LoginResponseDto(jwtTokenProvider.createToken(user.getId()));
+    }
 }
