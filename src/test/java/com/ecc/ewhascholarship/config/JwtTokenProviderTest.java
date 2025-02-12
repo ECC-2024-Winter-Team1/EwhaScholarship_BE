@@ -25,7 +25,7 @@ public class JwtTokenProviderTest {
     @Test
     public void createToken() {
         // given
-        String token = jwtTokenProvider.createToken(userId);
+        String token = jwtTokenProvider.createAccessToken(userId);
 
         // when
         // createToken 호출
@@ -37,7 +37,7 @@ public class JwtTokenProviderTest {
     @Test
     public void getUserIdFromToken() {
         // given
-        String token = jwtTokenProvider.createToken(userId);
+        String token = jwtTokenProvider.createAccessToken(userId);
 
         // when
         String userId = jwtTokenProvider.getUserIdFromToken(token);
@@ -49,7 +49,7 @@ public class JwtTokenProviderTest {
     @Test
     public void isTokenExpired_토큰_만료_안됨() {
         // given
-        String token = jwtTokenProvider.createToken(userId);
+        String token = jwtTokenProvider.createAccessToken(userId);
 
         // when
         boolean isExpired = jwtTokenProvider.isTokenExpired(token);
@@ -62,7 +62,7 @@ public class JwtTokenProviderTest {
     public void isTokenExpired_토큰_만료됨() {
         // given
         jwtTokenProvider.setValidityInMilliseconds(1000);
-        String token = jwtTokenProvider.createToken(userId);
+        String token = jwtTokenProvider.createAccessToken(userId);
 
         // 1초 기다림
         try {

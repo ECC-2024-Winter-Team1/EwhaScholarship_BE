@@ -2,6 +2,7 @@ package com.ecc.ewhascholarship.controller;
 
 import com.ecc.ewhascholarship.common.ApiResponse;
 import com.ecc.ewhascholarship.dto.*;
+import com.ecc.ewhascholarship.exception.JwtAuthenticationException;
 import com.ecc.ewhascholarship.security.JwtTokenProvider;
 import com.ecc.ewhascholarship.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<LoginResponseDto>> login(@RequestBody LoginRequestDto dto) {
+    public ResponseEntity<ApiResponse<TokenDto>> login(@RequestBody LoginRequestDto dto) {
         System.out.println(dto.toString());
-        LoginResponseDto response = userService.login(dto);
+        TokenDto response = userService.login(dto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success("로그인 성공!", response));
@@ -50,6 +51,22 @@ public class AuthController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success("사용자 탈퇴 성공!", null));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<TokenDto>> refreshAccessToken(@RequestBody TokenDto dto) {
+        String refreshToken = dto.getRefreshToken();
+
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            throw new JwtAuthenticationException("리프레시 토큰 제공되지 않았습니다.");
+        }
+
+        String accessToken = jwtTokenProvider.refreshAccessToken(refreshToken);
+
+        TokenDto response = new TokenDto(accessToken, null);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success("토큰 갱신 성공!", response));
     }
 
 }
