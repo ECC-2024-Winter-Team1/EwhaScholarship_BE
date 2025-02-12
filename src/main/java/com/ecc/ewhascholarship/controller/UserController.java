@@ -1,7 +1,8 @@
 package com.ecc.ewhascholarship.controller;
 
 import com.ecc.ewhascholarship.common.ApiResponse;
-import com.ecc.ewhascholarship.dto.UserDto;
+import com.ecc.ewhascholarship.dto.UserResponseDto;
+import com.ecc.ewhascholarship.dto.UserUpdateDto;
 import com.ecc.ewhascholarship.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,18 +20,18 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<UserDto>> getUser(Principal principal) {
+    public ResponseEntity<ApiResponse<UserResponseDto>> getUser(Principal principal) {
         UUID userId = UUID.fromString(principal.getName());
-        UserDto response = userService.getUserById(userId);
+        UserResponseDto response = userService.getUserById(userId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success("사용자 정보 조회 성공!",response));
     }
 
     @PatchMapping
-    public ResponseEntity<ApiResponse<UserDto>> updateUser(Principal principal, @RequestBody UserDto userDto) {
+    public ResponseEntity<ApiResponse<UserResponseDto>> updateUser(Principal principal, @RequestBody UserUpdateDto userUpdateDto) {
         UUID userId = UUID.fromString(principal.getName());
-        UserDto response = userService.updateUser(userId, userDto);
+        UserResponseDto response = userService.updateUser(userId, userUpdateDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success("사용자 정보 수정 성공!",response));

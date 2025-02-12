@@ -10,7 +10,5 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginResponseDto {
-    private Boolean isRegistered;
-    private String email;
     private String accessToken;
 }
