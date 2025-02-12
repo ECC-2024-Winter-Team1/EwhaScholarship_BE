@@ -1,12 +1,14 @@
 package com.ecc.ewhascholarship.service;
 
-import com.ecc.ewhascholarship.common.ApiResponse;
 import com.ecc.ewhascholarship.domain.Scholarship;
 import com.ecc.ewhascholarship.dto.ScholarshipDetailDto;
+import com.ecc.ewhascholarship.dto.ScholarshipDto;
+import com.ecc.ewhascholarship.dto.ScholarshipSearchRequestDto;
 import com.ecc.ewhascholarship.repository.ScholarshipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,6 +16,15 @@ public class ScholarshipService {
 
     @Autowired
     private ScholarshipRepository scholarshipRepository;
+
+    // 전체 장학금 조회
+    public Page<ScholarshipDto> getScholarships(ScholarshipSearchRequestDto query) {
+        Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
+
+        Page<Scholarship> scholarshipPage = scholarshipRepository.findAll(pageable);
+
+        return scholarshipPage.map(ScholarshipDto::fromEntity);
+    }
 
     // 특정 장학금 조회
     public ScholarshipDetailDto getScholarshipById(Long scholarshipId) {

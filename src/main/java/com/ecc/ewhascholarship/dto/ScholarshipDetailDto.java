@@ -24,7 +24,7 @@ public class ScholarshipDetailDto {
 
     private String paymentPeriod;
 
-    private ScholarshipType type;
+    private String type;
 
     private String note;
 
@@ -36,7 +36,7 @@ public class ScholarshipDetailDto {
                 .criteria(scholarship.getCriteria())
                 .applicationPeriod(scholarship.getApplicationPeriod())
                 .paymentPeriod(scholarship.getPaymentPeriod())
-                .type(scholarship.getType())
+                .type(scholarship.getType().toString())
                 .note(scholarship.getNote())
                 .build();
     }

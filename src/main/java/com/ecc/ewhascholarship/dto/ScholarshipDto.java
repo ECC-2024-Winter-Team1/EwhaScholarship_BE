@@ -1,7 +1,6 @@
 package com.ecc.ewhascholarship.dto;
 
 import com.ecc.ewhascholarship.domain.Scholarship;
-import com.ecc.ewhascholarship.domain.enums.ScholarshipType;
 import lombok.*;
 
 @Getter
@@ -19,7 +18,7 @@ public class ScholarshipDto {
 
     private String applicationPeriod;
 
-    private ScholarshipType type;
+    private String type;
 
     public static ScholarshipDto fromEntity(Scholarship scholarship) {
         return ScholarshipDto.builder()
@@ -27,7 +26,7 @@ public class ScholarshipDto {
                 .name(scholarship.getName())
                 .amount(scholarship.getAmount())
                 .applicationPeriod(scholarship.getApplicationPeriod())
-                .type(scholarship.getType())
+                .type(scholarship.getType().toString())
                 .build();
     }
 }
