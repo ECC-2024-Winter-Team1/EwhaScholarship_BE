@@ -37,4 +37,12 @@ public class Bookmark {
         bookmark.scholarship = scholarship;
         return bookmark;
     }
+
+    public static Bookmark deleteBookmark(User user, Scholarship scholarship) {
+
+        Bookmark bookmark = new Bookmark();
+        bookmark.user = user;
+        bookmark.scholarship = scholarship;
+        return bookmark;
+    }
 }

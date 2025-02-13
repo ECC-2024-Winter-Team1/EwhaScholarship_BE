@@ -58,4 +58,15 @@ public class BookmarkController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse
                 .success("북마크 등록 성공!", addedDto));
     }
+
+    // 북마크 삭제
+    @DeleteMapping("/api/bookmarks/{scholarshipId}")
+    public ResponseEntity<ApiResponse<BookmarkDto>> deleteBookmark(@PathVariable Long scholarshipId,
+                                                                   Principal principal) {
+
+        String userId = principal.getName();
+        BookmarkDto deletedDto = bookmarkService.deleteBookmark(userId, scholarshipId);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse
+                .success("북마크 삭제 성공!", deletedDto));
+    }
 }

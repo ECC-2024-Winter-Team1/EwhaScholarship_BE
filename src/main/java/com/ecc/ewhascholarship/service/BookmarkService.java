@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.print.Book;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -55,5 +54,16 @@ public class BookmarkService {
         Bookmark bookmark = Bookmark.createBookmark(user, scholarship);
         bookmarkRepository.save(bookmark);
         return BookmarkDto.createBookmarkDto(bookmark);
+    }
+
+    // 북마크 삭제
+    @Transactional
+    public BookmarkDto deleteBookmark(String userId, Long scholarshipId) {
+
+        Bookmark target = bookmarkRepository.findById(scholarshipId)
+                .orElseThrow(() -> new IllegalArgumentException("북마크 삭제 실패! 북마크 목록에 없는 장학금입니다."));
+
+        bookmarkRepository.delete(target);
+        return BookmarkDto.createBookmarkDto(target);
     }
 }
