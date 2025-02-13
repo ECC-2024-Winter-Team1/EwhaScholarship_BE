@@ -23,6 +23,10 @@ public class UserService {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+    public boolean existsById(UUID userId) {
+        return userRepository.existsById(userId);
+    }
+
     // 사용자 조회
     public UserResponseDto getUserById(UUID id) {
         User user = userRepository.findById(id).orElse(null);
@@ -71,7 +75,7 @@ public class UserService {
         userRepository.delete(target);
     }
 
-    public LoginResponseDto login(LoginRequestDto dto) {
+    public TokenDto login(LoginRequestDto dto) {
         User user = userRepository.findByUsername(dto.getUsername()).orElse(null);
 
         if (user == null) {
@@ -81,6 +85,9 @@ public class UserService {
             throw new RuntimeException("잘못된 비밀번호 입니다.");
         }
 
-        return new LoginResponseDto(jwtTokenProvider.createToken(user.getId()));
+        return new TokenDto(
+                jwtTokenProvider.createAccessToken(user.getId()),
+                jwtTokenProvider.createRefreshToken(user.getId())
+        );
     }
 }

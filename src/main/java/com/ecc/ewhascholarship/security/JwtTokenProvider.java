@@ -1,10 +1,10 @@
 package com.ecc.ewhascholarship.security;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.Claims;
+import com.ecc.ewhascholarship.exception.JwtAuthenticationException;
+import com.ecc.ewhascholarship.service.TokenBlacklistService;
+import io.jsonwebtoken.*;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,16 +15,21 @@ import java.util.UUID;
 @Setter
 public class JwtTokenProvider {
 
+    @Autowired
+    private TokenBlacklistService tokenBlacklistService;
+
     @Value("${JWT_SECRET_KEY}")
     private String secretKey;
 
-    // 토큰 유효 기간 30분
-    private long validityInMilliseconds = 1800000;
+    // access 토큰 유효 기간 30분
+    private long accessTokenValidityInMilliseconds = 1800000;
+    // refresh 토큰 유효 기간 7일
+    private long refreshTokenValidityInMilliseconds = 604800000;
 
-    // 토큰 생성
-    public String createToken(UUID userId) {
+    // access 토큰 생성
+    public String createAccessToken(UUID userId) {
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Date validity = new Date(now.getTime() + accessTokenValidityInMilliseconds);
 
         // JWT 토큰 생성
         return Jwts.builder()
@@ -33,6 +38,33 @@ public class JwtTokenProvider {
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+    }
+
+    // refresh 토큰 생성
+    public String createRefreshToken(UUID userId) {
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + refreshTokenValidityInMilliseconds);
+
+        return Jwts.builder()
+                .setSubject(String.valueOf(userId))
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
+
+    // refresh 토큰 검증 및 새로운 access 토큰 발급
+    public String refreshAccessToken(String refreshToken) {
+        if (tokenBlacklistService.isTokenBlacklisted(refreshToken)) {
+            throw new JwtAuthenticationException("유효하지 않은 토큰입니다.");
+        }
+
+        try {
+            String userId = getUserIdFromToken(refreshToken);
+            return createAccessToken(UUID.fromString(userId));
+        } catch (Exception e) {
+            throw new JwtAuthenticationException("유효하지 않은 토큰입니다.");
+        }
     }
 
     // 토큰에서 사용자 아이디 추출
@@ -62,6 +94,6 @@ public class JwtTokenProvider {
 
     // 토큰 검증
     public boolean validateToken(String token) {
-        return !isTokenExpired(token);  // 만료되지 않으면 유효한 토큰
+        return !isTokenExpired(token)&&!tokenBlacklistService.isTokenBlacklisted(token);
     }
 }
