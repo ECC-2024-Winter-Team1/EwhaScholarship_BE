@@ -3,14 +3,13 @@ package com.ecc.ewhascholarship.controller;
 import com.ecc.ewhascholarship.common.ApiResponse;
 import com.ecc.ewhascholarship.dto.ReviewDto;
 import com.ecc.ewhascholarship.service.ReviewService;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 public class ReviewController {
@@ -36,16 +35,10 @@ public class ReviewController {
     // 리뷰 등록
     @PostMapping("/api/scholarships/{scholarshipId}/reviews")
     public ResponseEntity<ApiResponse<ReviewDto>> create(@PathVariable Long scholarshipId,
-                                                         @RequestBody ReviewDto dto) {
-
-        if (dto.getScholarshipId() == null) {
-            throw new IllegalArgumentException("리뷰 등록 실패! scholarshipID가 필요합니다.");
-        }
-        if (dto.getUserId() == null) {
-            throw new IllegalArgumentException("리뷰 등록 실패! userId가 필요합니다.");
-        }
-
-        ReviewDto createdDto = reviewService.create(scholarshipId, dto);
+                                                         @RequestBody ReviewDto dto,
+                                                         Principal principal) {
+        String userId = principal.getName();
+        ReviewDto createdDto = reviewService.create(scholarshipId, dto, userId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse
                 .success("리뷰 등록 성공!", createdDto));
     }
@@ -68,5 +61,21 @@ public class ReviewController {
         ReviewDto deletedDto = reviewService.delete(reviewId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse
                 .success("리뷰 삭제 성공!", deletedDto));
+    }
+
+    // 내 리뷰 조회
+    @GetMapping("/api/reviews/my")
+    public ResponseEntity<ApiResponse<List<ReviewDto>>> myReviews(Principal principal) {
+
+        String userId = principal.getName();
+        List<ReviewDto> dtos = reviewService.myReviews(userId);
+
+        if (dtos.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse
+                    .error("내 리뷰를 찾을 수 없습니다."));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse
+                .success("내 리뷰 조회 성공!", dtos));
     }
 }
