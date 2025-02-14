@@ -1,5 +1,6 @@
 package com.ecc.ewhascholarship.domain;
 
+import com.ecc.ewhascholarship.dto.BookmarkDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -30,11 +31,17 @@ public class Bookmark {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public static Bookmark createBookmark(User user, Scholarship scholarship) {
+    public static Bookmark createBookmark(BookmarkDto dto, Scholarship scholarship, User user) {
 
-        Bookmark bookmark = new Bookmark();
-        bookmark.user = user;
-        bookmark.scholarship = scholarship;
-        return bookmark;
+        if (dto.getScholarshipId() != scholarship.getId()) {
+            throw new IllegalArgumentException("북마크 등록 실패! 장학금의 id가 잘못됐습니다.");
+        }
+
+        return new Bookmark(
+                null,
+                user,
+                scholarship,
+                dto.getCreatedAt()
+        );
     }
 }
