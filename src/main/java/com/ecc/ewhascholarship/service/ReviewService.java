@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -39,12 +38,12 @@ public class ReviewService {
 
     // 리뷰 등록
     @Transactional
-    public ReviewDto create(Long scholarshipId, ReviewDto dto) {
+    public ReviewDto create(Long scholarshipId, ReviewDto dto, String userId) {
 
         Scholarship scholarship = scholarshipRepository.findById(scholarshipId)
                 .orElseThrow(() -> new IllegalArgumentException("리뷰 등록 실패! 존재하지 않는 장학금입니다."));
 
-        User user = userRepository.findById(dto.getUserId())
+        User user = userRepository.findById(UUID.fromString(userId))
                 .orElseThrow(() -> new IllegalArgumentException("리뷰 등록 실패! 존재하지 않는 사용자입니다."));
 
         Review review = Review.createReview(dto, scholarship, user);

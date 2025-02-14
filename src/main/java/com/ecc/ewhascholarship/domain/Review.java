@@ -39,19 +39,13 @@ public class Review {
 
     public static Review createReview(ReviewDto dto, Scholarship scholarship, User user) {
 
-        if (dto.getId() != null) {
-            throw new IllegalArgumentException("리뷰 등록 실패! 리뷰의 id가 없어야 합니다.");
-        }
         if (dto.getScholarshipId() != scholarship.getId()) {
             throw new IllegalArgumentException("리뷰 등록 실패! 장학금의 id가 잘못됐습니다.");
         }
-        if (dto.getUserId() != user.getId()) {
-            throw new IllegalArgumentException("리뷰 등록 실패! 사용자의 id가 잘못됐습니다.");
-        }
 
         return new Review(
-                null,  // id는 자동 생성됨
-                scholarship,    // ?
+                null,
+                scholarship,
                 user,
                 dto.getIsAwarded(),
                 dto.getApplicationYear(),
