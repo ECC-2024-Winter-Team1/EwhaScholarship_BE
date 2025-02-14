@@ -62,4 +62,20 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse
                 .success("리뷰 삭제 성공!", deletedDto));
     }
+
+    // 내 리뷰 조회
+    @GetMapping("/api/reviews/my")
+    public ResponseEntity<ApiResponse<List<ReviewDto>>> myReviews(Principal principal) {
+
+        String userId = principal.getName();
+        List<ReviewDto> dtos = reviewService.myReviews(userId);
+
+        if (dtos.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse
+                    .error("내 리뷰를 찾을 수 없습니다."));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse
+                .success("내 리뷰 조회 성공!", dtos));
+    }
 }

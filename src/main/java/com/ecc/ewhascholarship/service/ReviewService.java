@@ -73,4 +73,14 @@ public class ReviewService {
         reviewRepository.delete(target);
         return ReviewDto.createReviewDto(target);
     }
+
+    // 내 리뷰 조회
+    @Transactional
+    public List<ReviewDto> myReviews(String userId) {
+
+        return reviewRepository.findByUserId(UUID.fromString(userId))
+                .stream()
+                .map(review -> ReviewDto.createReviewDto(review))
+                .collect(Collectors.toList());
+    }
 }
