@@ -5,10 +5,12 @@ import com.ecc.ewhascholarship.dto.ScholarshipDetailDto;
 import com.ecc.ewhascholarship.dto.ScholarshipDto;
 import com.ecc.ewhascholarship.dto.ScholarshipSearchRequestDto;
 import com.ecc.ewhascholarship.repository.ScholarshipRepository;
+import com.ecc.ewhascholarship.repository.specification.ScholarshipSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,7 +23,13 @@ public class ScholarshipService {
     public Page<ScholarshipDto> getScholarships(ScholarshipSearchRequestDto query) {
         Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
 
-        Page<Scholarship> scholarshipPage = scholarshipRepository.findAll(pageable);
+        Specification<Scholarship> spec = Specification.where(ScholarshipSpecification.hasSearchKeyword(query.getSearch()))
+                .and(ScholarshipSpecification.hasDepartment(query.getDepartment()))
+                .and(ScholarshipSpecification.hasYear(query.getYear()))
+                .and(ScholarshipSpecification.hasGpa(query.getGpa()))
+                .and(ScholarshipSpecification.hasIncomeLevel(query.getIncomeLevel()));
+
+        Page<Scholarship> scholarshipPage = scholarshipRepository.findAll(spec, pageable);
 
         return scholarshipPage.map(ScholarshipDto::fromEntity);
     }
