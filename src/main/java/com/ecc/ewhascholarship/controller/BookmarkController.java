@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 public class BookmarkController {
@@ -45,17 +44,22 @@ public class BookmarkController {
     // 북마크 등록
     @PostMapping("/api/bookmarks/{scholarshipId}")
     public ResponseEntity<ApiResponse<BookmarkDto>> addBookmark(@PathVariable Long scholarshipId,
+                                                                @RequestBody BookmarkDto dto,
                                                                 Principal principal) {
 
         String userId = principal.getName();
-        BookmarkDto addedDto = bookmarkService.addBookmark(userId, scholarshipId);
-
-        if (addedDto == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(ApiResponse.error("이미 북마크한 장학금입니다."));
-        }
+        BookmarkDto addedDto = bookmarkService.addBookmark(scholarshipId, dto, userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse
                 .success("북마크 등록 성공!", addedDto));
+    }
+
+    // 북마크 삭제
+    @DeleteMapping("/api/bookmarks/{scholarshipId}")
+    public ResponseEntity<ApiResponse<BookmarkDto>> deleteBookmark(@PathVariable Long scholarshipId) {
+
+        BookmarkDto deletedDto = bookmarkService.deleteBookmark(scholarshipId);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse
+                .success("북마크 삭제 성공!", deletedDto));
     }
 }

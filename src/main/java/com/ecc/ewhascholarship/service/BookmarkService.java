@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.print.Book;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -40,7 +39,7 @@ public class BookmarkService {
 
     // 북마크 등록
     @Transactional
-    public BookmarkDto addBookmark(String userId, Long scholarshipId) {
+    public BookmarkDto addBookmark(Long scholarshipId, BookmarkDto dto, String userId) {
 
         User user = userRepository.findById(UUID.fromString(userId))
                 .orElseThrow(() -> new IllegalArgumentException("북마크 등록 실패! 존재하지 않는 사용자입니다."));
@@ -49,11 +48,22 @@ public class BookmarkService {
                 .orElseThrow(() -> new IllegalArgumentException("북마크 등록 실패! 존재하지 않는 장학금입니다."));
 
         if (bookmarkRepository.existsByUserAndScholarship(user, scholarship)) {
-            return null;
+            throw new IllegalArgumentException("이미 북마크한 장학금입니다.");
         }
 
-        Bookmark bookmark = Bookmark.createBookmark(user, scholarship);
-        bookmarkRepository.save(bookmark);
-        return BookmarkDto.createBookmarkDto(bookmark);
+        Bookmark bookmark = Bookmark.createBookmark(dto, scholarship, user);
+        Bookmark added = bookmarkRepository.save(bookmark);
+        return BookmarkDto.createBookmarkDto(added);
+    }
+
+    // 북마크 삭제
+    @Transactional
+    public BookmarkDto deleteBookmark(Long scholarshipId) {
+
+        Bookmark target = bookmarkRepository.findById(scholarshipId)
+                .orElseThrow(() -> new IllegalArgumentException("북마크 삭제 실패! 북마크 목록에 없는 장학금입니다."));
+
+        bookmarkRepository.delete(target);
+        return BookmarkDto.createBookmarkDto(target);
     }
 }

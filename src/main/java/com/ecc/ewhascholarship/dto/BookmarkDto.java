@@ -1,29 +1,30 @@
 package com.ecc.ewhascholarship.dto;
 
 import com.ecc.ewhascholarship.domain.Bookmark;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
+import java.time.LocalDateTime;
+
+
 @Getter
-@ToString
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class BookmarkDto {
+
+    private Long id;
+    private String userId;
     private Long scholarshipId;
-    private String name;
-    private String amount;
-    private String applicationPeriod;
-    private String type;
+    private LocalDateTime createdAt;
 
     public static BookmarkDto createBookmarkDto(Bookmark bookmark) {
+
         return new BookmarkDto(
+                bookmark.getId(),
+                bookmark.getUser().getId().toString(),
                 bookmark.getScholarship().getId(),
-                bookmark.getScholarship().getName(),
-                bookmark.getScholarship().getAmount(),
-                bookmark.getScholarship().getApplicationPeriod(),
-                bookmark.getScholarship().getType().name()
+                bookmark.getCreatedAt()
         );
     }
 }
