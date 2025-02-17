@@ -58,12 +58,11 @@ public class BookmarkService {
 
     // 북마크 삭제
     @Transactional
-    public BookmarkDto deleteBookmark(Long scholarshipId) {
+    public void deleteBookmark(Long scholarshipId, String userId) {
 
-        Bookmark target = bookmarkRepository.findById(scholarshipId)
-                .orElseThrow(() -> new IllegalArgumentException("북마크 삭제 실패! 북마크 목록에 없는 장학금입니다."));
+        Bookmark bookmark = bookmarkRepository.findByUserIdAndScholarshipId(UUID.fromString(userId), scholarshipId)
+                .orElseThrow(() -> new IllegalArgumentException("북마크 삭제 실패! 해당 북마크가 존재하지 않습니다."));
 
-        bookmarkRepository.delete(target);
-        return BookmarkDto.createBookmarkDto(target);
+        bookmarkRepository.delete(bookmark);
     }
 }
