@@ -42,8 +42,17 @@ public class Scholarship {
     @Column
     private String note;
 
-    @OneToMany(mappedBy = "scholarship", fetch = FetchType.LAZY)
-    private List<Criteria> criteriaList;
+    @OneToOne(mappedBy = "scholarship", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ScholarshipGpa scholarshipGpa;
+
+    @OneToOne(mappedBy = "scholarship", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ScholarshipIncomeLevel scholarshipIncomeLevel;
+
+    @OneToOne(mappedBy = "scholarship", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ScholarshipDepartment scholarshipDepartment;
+
+    @OneToOne(mappedBy = "scholarship", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ScholarshipYear scholarshipYear;
 
     @OneToMany(mappedBy = "scholarship", fetch = FetchType.LAZY)
     private List<Bookmark> bookmarkList;
