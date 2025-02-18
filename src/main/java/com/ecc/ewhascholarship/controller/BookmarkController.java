@@ -3,7 +3,7 @@ package com.ecc.ewhascholarship.controller;
 import com.ecc.ewhascholarship.common.ApiResponse;
 import com.ecc.ewhascholarship.dto.BookmarkDto;
 import com.ecc.ewhascholarship.dto.BookmarkRequestDto;
-import com.ecc.ewhascholarship.dto.BookmarkResponseDto;
+import com.ecc.ewhascholarship.dto.ScholarshipDto;
 import com.ecc.ewhascholarship.repository.ScholarshipRepository;
 import com.ecc.ewhascholarship.repository.UserRepository;
 import com.ecc.ewhascholarship.service.BookmarkService;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class BookmarkController {
@@ -29,10 +30,10 @@ public class BookmarkController {
 
     // 북마크 조회
     @GetMapping("/api/bookmarks")
-    public ResponseEntity<ApiResponse<List<BookmarkResponseDto>>> bookmarks(Principal principal) {
+    public ResponseEntity<ApiResponse<List<ScholarshipDto>>> bookmarks(Principal principal) {
 
         String userId = principal.getName();
-        List<BookmarkResponseDto> dtos = bookmarkService.bookmarks(userId);
+        List<ScholarshipDto> dtos = bookmarkService.getBookmarkedScholarships(UUID.fromString(userId));
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse
                 .success("북마크 조회 성공!", dtos));
