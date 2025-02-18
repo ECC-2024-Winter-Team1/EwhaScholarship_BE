@@ -5,6 +5,7 @@ import com.ecc.ewhascholarship.domain.Scholarship;
 import com.ecc.ewhascholarship.domain.User;
 import com.ecc.ewhascholarship.dto.BookmarkDto;
 import com.ecc.ewhascholarship.dto.BookmarkRequestDto;
+import com.ecc.ewhascholarship.dto.BookmarkResponseDto;
 import com.ecc.ewhascholarship.repository.BookmarkRepository;
 import com.ecc.ewhascholarship.repository.ScholarshipRepository;
 import com.ecc.ewhascholarship.repository.UserRepository;
@@ -30,12 +31,12 @@ public class BookmarkService {
     private ScholarshipRepository scholarshipRepository;
 
     // 북마크 조회
-    public List<BookmarkDto> bookmarks(String userId) {
+    public List<BookmarkResponseDto> bookmarks(String userId) {
 
         List<Bookmark> bookmarks = bookmarkRepository.findByUserId(UUID.fromString(userId));
         return bookmarkRepository.findByUserId(UUID.fromString(userId))
                 .stream()
-                .map(bookmark -> BookmarkDto.createBookmarkDto(bookmark))
+                .map(bookmark -> BookmarkResponseDto.fromEntity(bookmark))
                 .collect(Collectors.toList());
     }
 
