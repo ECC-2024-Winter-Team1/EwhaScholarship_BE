@@ -60,7 +60,7 @@ public class ReviewController {
 
         ReviewDto deletedDto = reviewService.delete(reviewId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse
-                .success("리뷰 삭제 성공!", deletedDto));
+                .success("리뷰 삭제 성공!", null));
     }
 
     // 내 리뷰 조회
