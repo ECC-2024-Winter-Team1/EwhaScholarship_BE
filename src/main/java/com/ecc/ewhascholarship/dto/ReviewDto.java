@@ -18,6 +18,7 @@ public class ReviewDto {
     private Long id;
     private UUID userId;
     private Long scholarshipId;
+    private String scholarshipName;
     private String content;
     private Boolean isAwarded;
     private Integer applicationYear;
@@ -29,6 +30,7 @@ public class ReviewDto {
                 review.getId(),
                 review.getUser().getId(),
                 review.getScholarship().getId(),
+                review.getScholarship().getName(),
                 review.getContent(),
                 review.getIsAwarded(),
                 review.getApplicationYear(),
