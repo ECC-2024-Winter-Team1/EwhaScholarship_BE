@@ -1,6 +1,5 @@
 package com.ecc.ewhascholarship.domain;
 
-import com.ecc.ewhascholarship.dto.BookmarkDto;
 import com.ecc.ewhascholarship.dto.BookmarkRequestDto;
 import jakarta.persistence.*;
 import lombok.*;

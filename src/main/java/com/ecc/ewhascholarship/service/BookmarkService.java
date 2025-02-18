@@ -5,6 +5,7 @@ import com.ecc.ewhascholarship.domain.Scholarship;
 import com.ecc.ewhascholarship.domain.User;
 import com.ecc.ewhascholarship.dto.BookmarkDto;
 import com.ecc.ewhascholarship.dto.BookmarkRequestDto;
+import com.ecc.ewhascholarship.dto.ScholarshipDto;
 import com.ecc.ewhascholarship.repository.BookmarkRepository;
 import com.ecc.ewhascholarship.repository.ScholarshipRepository;
 import com.ecc.ewhascholarship.repository.UserRepository;
@@ -15,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class BookmarkService {
@@ -30,13 +30,20 @@ public class BookmarkService {
     private ScholarshipRepository scholarshipRepository;
 
     // 북마크 조회
-    public List<BookmarkDto> bookmarks(String userId) {
+    public List<ScholarshipDto> getBookmarkedScholarships(UUID userId) {
 
-        List<Bookmark> bookmarks = bookmarkRepository.findByUserId(UUID.fromString(userId));
-        return bookmarkRepository.findByUserId(UUID.fromString(userId))
+        List<Bookmark> bookmarks = bookmarkRepository.findByUserId(userId);
+        return bookmarks
                 .stream()
-                .map(bookmark -> BookmarkDto.createBookmarkDto(bookmark))
-                .collect(Collectors.toList());
+                .map(bookmark -> new ScholarshipDto(
+                        bookmark.getScholarship().getId(),
+                        bookmark.getScholarship().getName(),
+                        bookmark.getScholarship().getAmount(),
+                        bookmark.getScholarship().getApplicationPeriod(),
+                        bookmark.getScholarship().getType().name(),
+                        true
+                ))
+                .toList();
     }
 
     // 북마크 등록
