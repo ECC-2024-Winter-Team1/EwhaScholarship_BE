@@ -22,8 +22,8 @@ public class ScholarshipSpecification {
 
             Join<Scholarship, ScholarshipGpa> gpaJoin = root.join("scholarshipGpa", JoinType.LEFT);
             return cb.or(
-                    cb.isNull(gpaJoin.get("id")),  // ✅ GPA 조건이 없는 장학금 포함
-                    cb.lessThanOrEqualTo(gpaJoin.get("gpa"), gpa) // ✅ GPA 조건을 만족하는 장학금만 포함
+                    cb.isNull(gpaJoin.get("id")),
+                    cb.lessThanOrEqualTo(gpaJoin.get("gpa"), gpa)
             );
         };
     }
@@ -34,8 +34,8 @@ public class ScholarshipSpecification {
 
             Join<Scholarship, ScholarshipIncomeLevel> incomeJoin = root.join("scholarshipIncomeLevel", JoinType.LEFT);
             return cb.or(
-                    cb.isNull(incomeJoin.get("id")),  // ✅ 소득분위 조건이 없는 장학금 포함
-                    cb.greaterThanOrEqualTo(incomeJoin.get("incomeLevel"), incomeLevel) // ✅ 소득분위 조건을 만족하는 장학금만 포함
+                    cb.isNull(incomeJoin.get("id")),
+                    cb.greaterThanOrEqualTo(incomeJoin.get("incomeLevel"), incomeLevel)
             );
         };
     }
@@ -44,10 +44,10 @@ public class ScholarshipSpecification {
         return (root, query, cb) -> {
             if (department == null) return null;
 
-            Join<Scholarship, ScholarshipDepartment> departmentJoin = root.join("scholarshipDepartment", JoinType.LEFT);
+            Join<Scholarship, ScholarshipDepartment> departmentJoin = root.join("scholarshipDepartments", JoinType.LEFT);
             return cb.or(
-                    cb.isNull(departmentJoin.get("id")),  // ✅ 단과대 조건이 없는 장학금 포함
-                    cb.equal(departmentJoin.get("department"), department) // ✅ 단과대 조건을 만족하는 장학금만 포함
+                    cb.isNull(departmentJoin.get("id")),
+                    cb.equal(departmentJoin.get("department"), department)
             );
         };
     }
@@ -56,10 +56,10 @@ public class ScholarshipSpecification {
         return (root, query, cb) -> {
             if (year == null) return null;
 
-            Join<Scholarship, ScholarshipYear> yearJoin = root.join("scholarshipYear", JoinType.LEFT);
+            Join<Scholarship, ScholarshipYear> yearJoin = root.join("scholarshipYears", JoinType.LEFT);
             return cb.or(
-                    cb.isNull(yearJoin.get("id")),  // ✅ 학년 조건이 없는 장학금 포함
-                    cb.equal(yearJoin.get("year"), year) // ✅ 학년 조건을 만족하는 장학금만 포함
+                    cb.isNull(yearJoin.get("id")),
+                    cb.equal(yearJoin.get("year"), year)
             );
         };
     }

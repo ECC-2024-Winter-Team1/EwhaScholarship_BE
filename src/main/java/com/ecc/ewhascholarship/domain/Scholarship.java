@@ -48,11 +48,11 @@ public class Scholarship {
     @OneToOne(mappedBy = "scholarship", cascade = CascadeType.ALL, orphanRemoval = true)
     private ScholarshipIncomeLevel scholarshipIncomeLevel;
 
-    @OneToOne(mappedBy = "scholarship", cascade = CascadeType.ALL, orphanRemoval = true)
-    private ScholarshipDepartment scholarshipDepartment;
+    @OneToMany(mappedBy = "scholarship", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ScholarshipDepartment> scholarshipDepartments;
 
-    @OneToOne(mappedBy = "scholarship", cascade = CascadeType.ALL, orphanRemoval = true)
-    private ScholarshipYear scholarshipYear;
+    @OneToMany(mappedBy = "scholarship", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ScholarshipYear> scholarshipYears;
 
     @OneToMany(mappedBy = "scholarship", fetch = FetchType.LAZY)
     private List<Bookmark> bookmarkList;
