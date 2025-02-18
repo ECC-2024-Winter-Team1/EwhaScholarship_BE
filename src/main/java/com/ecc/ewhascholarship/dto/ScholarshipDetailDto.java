@@ -28,7 +28,9 @@ public class ScholarshipDetailDto {
 
     private String note;
 
-    public static ScholarshipDetailDto fromEntity(Scholarship scholarship) {
+    private Boolean isBookmarked;
+
+    public static ScholarshipDetailDto fromEntity(Scholarship scholarship, boolean isBookmarked) {
         return ScholarshipDetailDto.builder()
                 .scholarshipId(scholarship.getId())
                 .name(scholarship.getName())
@@ -38,6 +40,7 @@ public class ScholarshipDetailDto {
                 .paymentPeriod(scholarship.getPaymentPeriod())
                 .type(scholarship.getType().toString())
                 .note(scholarship.getNote())
+                .isBookmarked(isBookmarked)
                 .build();
     }
 

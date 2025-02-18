@@ -9,7 +9,7 @@ public class ScholarshipDepartment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "scholarship_id", nullable = false)
     private Scholarship scholarship;
 

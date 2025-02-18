@@ -4,6 +4,7 @@ import com.ecc.ewhascholarship.domain.Scholarship;
 import com.ecc.ewhascholarship.dto.ScholarshipDetailDto;
 import com.ecc.ewhascholarship.dto.ScholarshipDto;
 import com.ecc.ewhascholarship.dto.ScholarshipSearchRequestDto;
+import com.ecc.ewhascholarship.repository.BookmarkRepository;
 import com.ecc.ewhascholarship.repository.ScholarshipRepository;
 import com.ecc.ewhascholarship.repository.specification.ScholarshipSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +14,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class ScholarshipService {
 
     @Autowired
     private ScholarshipRepository scholarshipRepository;
 
+    @Autowired
+    private BookmarkRepository bookmarkRepository;
+
     // 전체 장학금 조회
-    public Page<ScholarshipDto> getScholarships(ScholarshipSearchRequestDto query) {
+    public Page<ScholarshipDto> getScholarships(ScholarshipSearchRequestDto query, UUID userId) {
         Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
 
         Specification<Scholarship> spec = Specification.where(ScholarshipSpecification.hasSearchKeyword(query.getSearch()))
@@ -31,19 +37,23 @@ public class ScholarshipService {
 
         Page<Scholarship> scholarshipPage = scholarshipRepository.findAll(spec, pageable);
 
-        return scholarshipPage.map(ScholarshipDto::fromEntity);
+        return scholarshipPage.map(scholarship -> {
+            boolean isBookmarked = bookmarkRepository.existsByUserIdAndScholarshipId(userId, scholarship.getId());
+            return ScholarshipDto.fromEntity(scholarship, isBookmarked);
+        });
     }
 
     // 특정 장학금 조회
-    public ScholarshipDetailDto getScholarshipById(Long scholarshipId) {
+    public ScholarshipDetailDto getScholarshipById(Long scholarshipId, UUID userId) {
         Scholarship scholarship = scholarshipRepository.findById(scholarshipId).orElse(null);
-        System.out.println(scholarship.toString());
 
         if (scholarship==null) {
             throw new IllegalArgumentException("해당 장학금을 찾을 수 없습니다.");
         }
 
-        return ScholarshipDetailDto.fromEntity(scholarship);
+        boolean isBookmarked = bookmarkRepository.existsByUserIdAndScholarshipId(userId, scholarshipId);
+
+        return ScholarshipDetailDto.fromEntity(scholarship, isBookmarked);
     }
 
 }
