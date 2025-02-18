@@ -35,14 +35,7 @@ public class BookmarkService {
         List<Bookmark> bookmarks = bookmarkRepository.findByUserId(userId);
         return bookmarks
                 .stream()
-                .map(bookmark -> new ScholarshipDto(
-                        bookmark.getScholarship().getId(),
-                        bookmark.getScholarship().getName(),
-                        bookmark.getScholarship().getAmount(),
-                        bookmark.getScholarship().getApplicationPeriod(),
-                        bookmark.getScholarship().getType().name(),
-                        true
-                ))
+                .map(bookmark -> ScholarshipDto.fromEntity(bookmark.getScholarship(), true))
                 .toList();
     }
 
