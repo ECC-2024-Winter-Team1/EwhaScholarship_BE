@@ -1,5 +1,6 @@
 package com.ecc.ewhascholarship.common;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 public class ApiResponse<T> {
     private String status; // "success" 또는 "error"
     private String message;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 
     public static <T> ApiResponse<T> success(String message, T data) {
