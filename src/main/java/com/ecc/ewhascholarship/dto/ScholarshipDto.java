@@ -20,13 +20,16 @@ public class ScholarshipDto {
 
     private String type;
 
-    public static ScholarshipDto fromEntity(Scholarship scholarship) {
+    private Boolean isBookmarked;
+
+    public static ScholarshipDto fromEntity(Scholarship scholarship, boolean isBookmarked) {
         return ScholarshipDto.builder()
                 .scholarshipId(scholarship.getId())
                 .name(scholarship.getName())
                 .amount(scholarship.getAmount())
                 .applicationPeriod(scholarship.getApplicationPeriod())
                 .type(scholarship.getType().toString())
+                .isBookmarked(isBookmarked)
                 .build();
     }
 }
