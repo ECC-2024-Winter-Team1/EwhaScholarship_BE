@@ -4,10 +4,12 @@ import com.ecc.ewhascholarship.domain.Bookmark;
 import com.ecc.ewhascholarship.domain.Scholarship;
 import com.ecc.ewhascholarship.domain.User;
 import com.ecc.ewhascholarship.dto.BookmarkDto;
+import com.ecc.ewhascholarship.dto.BookmarkRequestDto;
 import com.ecc.ewhascholarship.repository.BookmarkRepository;
 import com.ecc.ewhascholarship.repository.ScholarshipRepository;
 import com.ecc.ewhascholarship.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,19 +41,20 @@ public class BookmarkService {
 
     // 북마크 등록
     @Transactional
-    public BookmarkDto addBookmark(Long scholarshipId, BookmarkDto dto, String userId) {
+    public BookmarkDto addBookmark(BookmarkRequestDto dto, String userId) {
+
+        Scholarship scholarship = scholarshipRepository.findById(dto.getScholarshipId())
+                .orElseThrow(() -> new IllegalArgumentException("북마크 등록 실패! 존재하지 않는 장학금입니다.") {
+                });
 
         User user = userRepository.findById(UUID.fromString(userId))
                 .orElseThrow(() -> new IllegalArgumentException("북마크 등록 실패! 존재하지 않는 사용자입니다."));
 
-        Scholarship scholarship = scholarshipRepository.findById(scholarshipId)
-                .orElseThrow(() -> new IllegalArgumentException("북마크 등록 실패! 존재하지 않는 장학금입니다."));
-
-        if (bookmarkRepository.existsByUserAndScholarship(user, scholarship)) {
-            throw new IllegalArgumentException("이미 북마크한 장학금입니다.");
+        if (bookmarkRepository.existsByUserIdAndScholarshipId(UUID.fromString(userId), dto.getScholarshipId())) {
+            throw new DuplicateKeyException("이미 북마크한 장학금입니다.");
         }
 
-        Bookmark bookmark = Bookmark.createBookmark(dto, scholarship, user);
+        Bookmark bookmark = Bookmark.createBookmark(dto, user, scholarship);
         Bookmark added = bookmarkRepository.save(bookmark);
         return BookmarkDto.createBookmarkDto(added);
     }

@@ -14,6 +14,6 @@ import java.util.UUID;
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 
     List<Bookmark> findByUserId(UUID userId);
-    boolean existsByUserAndScholarship(User user, Scholarship scholarship);
+    boolean existsByUserIdAndScholarshipId(UUID userId, Long scholarshipId);
     Optional<Bookmark> findByUserIdAndScholarshipId(UUID userId, Long scholarshipId);
 }
