@@ -22,7 +22,7 @@ public class ReviewDto {
     private String content;
     private Boolean isAwarded;
     private Integer applicationYear;
-    private Integer applicationGrade;
+    private Integer applicationSemester;
 
     public static ReviewDto createReviewDto(Review review) {
 
@@ -34,7 +34,7 @@ public class ReviewDto {
                 review.getContent(),
                 review.getIsAwarded(),
                 review.getApplicationYear(),
-                review.getApplicationGrade()
+                review.getApplicationSemester()
         );
     }
 }

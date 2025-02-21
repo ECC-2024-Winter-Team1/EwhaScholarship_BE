@@ -31,7 +31,7 @@ public class Review {
     private Integer applicationYear;
 
     @Column
-    private Integer applicationGrade;
+    private Integer applicationSemester;
 
     @Lob
     @Column(columnDefinition = "TEXT")
@@ -49,7 +49,7 @@ public class Review {
                 user,
                 dto.getIsAwarded(),
                 dto.getApplicationYear(),
-                dto.getApplicationGrade(),
+                dto.getApplicationSemester(),
                 dto.getContent()
         );
     }
@@ -72,8 +72,8 @@ public class Review {
         if (dto.getApplicationYear() != null) {
             this.applicationYear = dto.getApplicationYear();
         }
-        if (dto.getApplicationGrade() != null) {
-            this.applicationGrade = dto.getApplicationGrade();
+        if (dto.getApplicationSemester() != null) {
+            this.applicationSemester = dto.getApplicationSemester();
         }
         if (dto.getContent() != null) {
             this.content = dto.getContent();
